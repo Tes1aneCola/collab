@@ -1,4 +1,15 @@
 from django.db import models
+from phonenumber_field.modelfields import PhoneNumberField
+
+
+class User(models.Model):
+    first_name = models.CharField(max_length=13)
+    last_name = models.CharField(max_length=33)
+    phone_number = PhoneNumberField(region='KG')
+
+    def __str__(self):
+        return self.first_name
+
 
 
 class Marka(models.Model):
@@ -10,7 +21,7 @@ class Marka(models.Model):
 
 
 class Model(models.Model):
-    model_name = models.CharField(max_length=12)
+    model_name = models.CharField(max_length=22)
 
     def __str__(self):
         return self.model_name
@@ -18,6 +29,7 @@ class Model(models.Model):
 
 class Car(models.Model):
     car_name = models.CharField(max_length=25)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     year = models.PositiveIntegerField()
     description = models.TextField()
     price = models.PositiveIntegerField()
@@ -47,3 +59,7 @@ class Car(models.Model):
 
     def __str__(self):
         return self.car_name
+
+class CarPhotos(models.Model):
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='car')
+    image = models.ImageField(upload_to='image/', null=True, blank=True)
